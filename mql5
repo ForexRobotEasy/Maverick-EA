@@ -1,0 +1,102 @@
+
+//+------------------------------------------------------------------+
+//|                                                 Maverick EA.mq5 |
+//|                        https://www.forexroboteasy.com              |
+//|                     Developed by Forex Robot Easy Team             |
+//|                                                                  |
+//|  Terms of Reference:                                             |
+//|  1. Develop a code for Maverick EA, an automated multicurrency     |
+//|     trading system for Forex trading strategies.                  |
+//|  2. Utilize a modified Zig Zag indicator to generate trading      |
+//|     signals.                                                      |
+//|  3. Open two pending orders (sell stop and buy stop) at the peaks |
+//|     of the Zig Zag indicator.                                     |
+//|  4. Implement profit trails at break (false break) to activate    |
+//|     and run the orders.                                           |
+//|  5. Incorporate a trend scalping strategy combined with grid and  |
+//|     trailing stop mechanisms.                                     |
+//|  6. Execute 20 to 100 trades per month, depending on the time     |
+//|     frame (TF).                                                   |
+//|  7. Optimal time frames for the system are M5, M15, and M30.      |
+//|  8. Ensure compatibility with any currency pair.                  |
+//|  9. Set the minimal deposit requirement for one instrument to     |
+//|     1000 USD.                                                     |
+//|  10. Provide parameter settings for different trading styles and  |
+//|      market conditions.                                           |
+//|  11. Limit the terms of reference to code requirements and        |
+//|      necessary feature development.                               |
+//|  12. Specify only the necessary trading functions in the          |
+//|      technical specification.                                     |
+//|  13. The size of the terms of reference should be no more than    |
+//|      1500-2000 characters.                                        |
+//+------------------------------------------------------------------+
+
+// Include necessary libraries and define variables
+#include <Trade\Trade.mqh>
+#include <ZigZag\ZigZag.mqh>
+
+CTrade trade; // Trade object
+
+//+------------------------------------------------------------------+
+//| Expert initialization function                                   |
+//+------------------------------------------------------------------+
+int OnInit()
+{
+    // Set minimum deposit requirement
+    trade.SetMinDeposit(1000);
+
+    // Set parameter settings for different trading styles and market conditions
+    // ...
+
+    return(INIT_SUCCEEDED);
+}
+
+//+------------------------------------------------------------------+
+//| Expert deinitialization function                                 |
+//+------------------------------------------------------------------+
+void OnDeinit(const int reason)
+{
+    // Perform any necessary cleanup tasks
+}
+
+//+------------------------------------------------------------------+
+//| Expert start function                                            |
+//+------------------------------------------------------------------+
+void OnTick()
+{
+    // Define variables
+    double zigZagArray[];
+    int zigZagBufferSize = 0;
+
+    // Calculate modified Zig Zag indicator
+    if (iCustom(_Symbol, _Period, 'ZigZag', 12, 5, 3, 0, 0, zigZagArray) > 0)
+    {
+        zigZagBufferSize = ArraySize(zigZagArray);
+    }
+
+    // Check if Zig Zag indicator has enough data
+    if (zigZagBufferSize > 1)
+    {
+        // Get the last two peaks of the Zig Zag indicator
+        double peak1 = zigZagArray[zigZagBufferSize-2];
+        double peak2 = zigZagArray[zigZagBufferSize-1];
+
+        // Open sell stop and buy stop pending orders at the peaks
+        trade.BuyStop(peak1, 0.01, _Symbol, 0, 0, 0, 'MaverickEA_BuyStop');
+        trade.SellStop(peak2, 0.01, _Symbol, 0, 0, 0, 'MaverickEA_SellStop');
+
+        // Implement profit trails at break to activate and run the orders
+        // ...
+
+        // Incorporate trend scalping strategy combined with grid and trailing stop mechanisms
+        // ...
+
+        // Execute 20 to 100 trades per month
+        // ...
+
+        // Output trading signals and actions in the Expert Advisor's log
+        Print('Trading signals and actions: ');
+        Print('Buy Stop order opened at ', peak1);
+        Print('Sell Stop order opened at ', peak2);
+    }
+}
